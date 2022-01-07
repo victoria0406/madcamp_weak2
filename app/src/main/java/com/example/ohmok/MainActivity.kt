@@ -19,18 +19,23 @@ class MainActivity : AppCompatActivity() {
     var turn = true
     lateinit var ball_Board:onballs
     var color = "black"
+    var room = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val board = findViewById<Go_board>(R.id.Go_board)
         color = intent.getStringExtra("color").toString();
+        room = intent.getStringExtra("room").toString();
         turn = color =="black"
         Log.v("h1",turn.toString())
         setContentView(R.layout.activity_main)
         ball_Board = findViewById<onballs>(R.id.balls)
-        ball_Board.setTurn(turn)
+        ball_Board.setTurn(turn, room)
+
         var mSocket = SocketApplication.get()
         mSocket.connect()
+
+        mSocket.emit("rejoin", room);
 
         ball_Board.setSocket(mSocket)
         mSocket.on("set go", send_balls)
