@@ -16,11 +16,13 @@ class waiting_room : AppCompatActivity() {
     lateinit var mSocket: io.socket.client.Socket
     var room_name = ""
     var ready_num = 0
+    var my_name = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.v("2nd","create")
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_waiting_room)
         val ma = main_room()
         //mSocket= ma.mSocket
         mSocket = SocketApplication.get()
@@ -33,8 +35,10 @@ class waiting_room : AppCompatActivity() {
         mSocket.on("invalid room name", Go_back)
 
 
-        setContentView(R.layout.activity_waiting_room)
+
         room_name = intent.getStringExtra("room_name").toString()
+        my_name = intent.getStringExtra("use_name").toString()
+
 
         mSocket.emit("join",room_name) //
 
@@ -46,13 +50,7 @@ class waiting_room : AppCompatActivity() {
         //}
         //var mSocket = SocketApplication.get()
     }
-    fun setReady(){
-        var ready = findViewById<Button>(R.id.ready)
-        ready.setOnClickListener{view ->
-            mSocket.emit("ready",room_name)
-        }
 
-    }
     fun getStart(){
         ready_num++
         if (ready_num==2){
@@ -66,6 +64,7 @@ class waiting_room : AppCompatActivity() {
         Log.v("start",color)
         room_intent.putExtra("color",color)
         room_intent.putExtra("room_name",room_name)
+        room_intent.putExtra("my_name",my_name)
         mSocket.close()
         startActivity(room_intent)
         this.finish()
@@ -73,8 +72,6 @@ class waiting_room : AppCompatActivity() {
     }
 
     var Go_back = Emitter.Listener{ (_) ->
-
-        Toast.makeText(this, "이 방은 현재 참여가 불가능합니다.", Toast.LENGTH_SHORT).show();
 
         finish();
 

@@ -7,10 +7,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import com.example.ohmok.ui.home.HomeFragment
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.common.model.AuthErrorCause.*
 import com.kakao.sdk.user.UserApiClient
+import io.socket.emitter.Emitter
 
 class Login_activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +20,18 @@ class Login_activity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         //val keyHash = Utility.getKeyHash(this)
         //Log.v("Hash", keyHash)
+        var mSocket = SocketApplication.get()
+        mSocket.connect()
+
+        mSocket.emit("rooms")
+        mSocket.on("rooms", Emitter.Listener { rooms ->
+            var size = rooms[0].toString().length
+            //Log.v("rooms",rooms[0].toString().substring(1,size-1))
+            var home = HomeFragment()
+            home.setRoomlist(rooms[0].toString().substring(1,size-1).split(","))
+        })
+
+
 
         // 로그인 정보 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->

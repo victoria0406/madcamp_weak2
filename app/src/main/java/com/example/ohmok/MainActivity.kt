@@ -23,12 +23,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         val board = findViewById<Go_board>(R.id.Go_board)
         room_name = intent.getStringExtra("room_name").toString();
         color = intent.getStringExtra("color").toString();
         turn = color =="black"
+        var my_color = findViewById<TextView>(R.id.my_color)
+        var your_color = findViewById<TextView>(R.id.your_color)
+
+        var my_name = findViewById<TextView>(R.id.my_name)
+        var my_user_name = intent.getStringExtra("my_name").toString();
+
+        my_name.text = my_user_name
+
+        if (color=="black"){
+            my_color.text = "BLACK"
+            your_color.text = "WHITE"
+        }else{
+            my_color.text = "WHITE"
+            your_color.text = "BLACK"
+        }
+
+
         Log.v("h1",turn.toString())
-        setContentView(R.layout.activity_main)
+
         ball_Board = findViewById<onballs>(R.id.balls)
         ball_Board.setTurn(turn, room_name)
         var mSocket = SocketApplication.get()
